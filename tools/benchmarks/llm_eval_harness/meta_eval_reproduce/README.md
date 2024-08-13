@@ -1,7 +1,7 @@
 
 # Reproducing Meta 3.1 Evaluation Metrics Using LM-Evaluation-Harness
 
-As Meta Llama models gain popularity, evaluating these models has become increasingly important. We have released all the evaluation details for Meta-Llama 3.1 models as datasets in the [3.1 evals Huggingface collection](https://huggingface.co/collections/meta-llama/llama-31-evals-66a2c5a14c2093e58298ac7f). This tutorial demonstrates how to reproduce metrics similar to our reported numbers using the [lm-evaluation-harness](https://github.com/EleutherAI/lm-evaluation-harness/tree/main) library and our prompts from the 3.1 evals datasets on selected tasks.
+As Meta Llama models gain popularity, evaluating these models has become increasingly important. We have released all the evaluation details for Meta-Llama 3.1 models as datasets in the [3.1 evals Hugging Face collection](https://huggingface.co/collections/meta-llama/llama-31-evals-66a2c5a14c2093e58298ac7f). This tutorial demonstrates how to reproduce metrics similar to our reported numbers using the [lm-evaluation-harness](https://github.com/EleutherAI/lm-evaluation-harness/tree/main) library and our prompts from the 3.1 evals datasets on selected tasks.
 
 ## Important Notes
 
@@ -9,9 +9,9 @@ As Meta Llama models gain popularity, evaluating these models has become increas
 2. **Model Compatibility**: This tutorial is specifically for Llama 3 based models, as our prompts include Meta Llama 3 special tokens, e.g. `<|start_header_id|>user<|end_header_id|`. It will not work with models that are not based on Llama 3.
 
 
-### Huggingface setups
+### Hugging Face 🤗 setups
 
-In order to install correct lm-evaluation-harness version, please check the [reproducibility section](https://huggingface.co/docs/leaderboards/open_llm_leaderboard/about#reproducibility) in Huggingface 🤗 Open LLM Leaderboard v2 About page. To add the VLLM dependency, we can do following:
+In order to install correct lm-evaluation-harness version, please check the [reproducibility section](https://huggingface.co/docs/leaderboards/open_llm_leaderboard/about#reproducibility) in Hugging Face 🤗 Open LLM Leaderboard v2 About page. To add the VLLM dependency, we can do following:
 
 ```
 git clone git@github.com:huggingface/lm-evaluation-harness.git
@@ -20,30 +20,30 @@ git checkout adding_all_changess
 pip install -e .[math,ifeval,sentencepiece,vllm]
 ```
 
-To access our [3.1 evals Huggingface collection](https://huggingface.co/collections/meta-llama/llama-31-evals-66a2c5a14c2093e58298ac7f), you must:
-- Log in to the Huggingface website and click the 3.1 evals dataset pages and agree to the terms.
-- Follow the [Huggingface authentication instructions](https://huggingface.co/docs/huggingface_hub/en/quick-start#authentication) to gain read access for your machine.
+To access our [3.1 evals Hugging Face collection](https://huggingface.co/collections/meta-llama/llama-31-evals-66a2c5a14c2093e58298ac7f), you must:
+- Log in to the Hugging Face website and click the 3.1 evals dataset pages and agree to the terms.
+- Follow the [Hugging Face 🤗 authentication instructions](https://huggingface.co/docs/huggingface_hub/en/quick-start#authentication) to gain read access for your machine.
 
-It is recommended to read the dataset card to understand the meaning of each column and use the viewer feature in the Huggingface dataset to view our dataset. It is important to have some basic understanding of our dataset format and content before proceeding.
+It is recommended to read the dataset card to understand the meaning of each column and use the viewer feature in the Hugging Face dataset to view our dataset. It is important to have some basic understanding of our dataset format and content before proceeding.
 
 ### Task Selection
 
-Given the extensive number of tasks available (12 for pretrained models and 30 for instruct models), here we will focus on tasks that overlap with the popular Huggingface 🤗 [Open LLM Leaderboard v2](https://huggingface.co/spaces/open-llm-leaderboard/open_llm_leaderboard) as shown in the following:
+Given the extensive number of tasks available (12 for pretrained models and 30 for instruct models), here we will focus on tasks that overlap with the popular Hugging Face 🤗 [Open LLM Leaderboard v2](https://huggingface.co/spaces/open-llm-leaderboard/open_llm_leaderboard) as shown in the following:
 
 - **Tasks for pretrained models**: BBH and MMLU-Pro
 - **Tasks for instruct models**: Math-Hard, IFeval, GPQA, and MMLU-Pro
 
-Here, we aim to reproduce the Meta reported benchmark numbers on the aforementioned tasks using Huggingface 🤗 [leaderboard implementation](https://github.com/EleutherAI/lm-evaluation-harness/tree/main/lm_eval/tasks/leaderboard). Please follow the instructions below to make necessary modifications to use our eval prompts and reproduce our reported metrics.
+Here, we aim to reproduce the Meta reported benchmark numbers on the aforementioned tasks using Hugging Face 🤗 [leaderboard implementation](https://github.com/EleutherAI/lm-evaluation-harness/tree/main/lm_eval/tasks/leaderboard). Please follow the instructions below to make necessary modifications to use our eval prompts and reproduce our reported metrics.
 
-### Differences between our evaluation and Huggingface leaderboard evaluation
+### Differences between our evaluation and Hugging Face 🤗 leaderboard evaluation
 
-There are 3 major differences in terms of the eval configurations and prompts between this tutorial implementation and Huggingface 🤗 [leaderboard implementation](https://github.com/EleutherAI/lm-evaluation-harness/tree/main/lm_eval/tasks/leaderboard).
+There are 3 major differences in terms of the eval configurations and prompts between this tutorial implementation and Hugging Face 🤗 [leaderboard implementation](https://github.com/EleutherAI/lm-evaluation-harness/tree/main/lm_eval/tasks/leaderboard).
 
-- **Prompts**: We use Chain-of-Thought(COT) prompts while Huggingface leaderboard does not,
-- **Task type**: For MMLU-Pro, BBH, GPQA tasks, we ask the model to generate response and score the parsed answer from generated response, while Huggingface leaderboard evaluation is comparing log likelihood of all label words, such as [ (A),(B),(C),(D) ].
-- **Inference**: We use internal LLM inference solution that loads pytorch checkpoints and do not use padding, while Huggingface leaderboard uses Huggingface format model and sometimes will use padding depending on the tasks type and batch size.
+- **Prompts**: We use Chain-of-Thought(COT) prompts while Hugging Face 🤗 leaderboard does not,
+- **Task type**: For MMLU-Pro, BBH, GPQA tasks, we ask the model to generate response and score the parsed answer from generated response, while Hugging Face 🤗 leaderboard evaluation is comparing log likelihood of all label words, such as [ (A),(B),(C),(D) ].
+- **Inference**: We use internal LLM inference solution that loads pytorch checkpoints and do not use padding, while Hugging Face 🤗 leaderboard uses Hugging Face format model and sometimes will use padding depending on the tasks type and batch size.
 
-Given those differences, our reproduced number can not be apple to apple compared to the numbers in the Huggingface 🤗 [Open LLM Leaderboard v2](https://huggingface.co/spaces/open-llm-leaderboard/open_llm_leaderboard), even if the task names are the same.
+Given those differences, our reproduced number can not be apple to apple compared to the numbers in the Hugging Face 🤗 [Open LLM Leaderboard v2](https://huggingface.co/spaces/open-llm-leaderboard/open_llm_leaderboard), even if the task names are the same.
 
 ### Create task config
 
@@ -125,7 +125,7 @@ Once we have the yaml created, we can run the tasks using `lm-eval` CLI and use 
 
 **Padding**
 
-By default, for the generative tasks, the `lm-eval --model_args="{...}" --batch_size=auto` command will use Huggingface inference solution that uses a static batch method with [left padding](https://github.com/EleutherAI/lm-evaluation-harness/blob/8ad598dfd305ece8c6c05062044442d207279a97/lm_eval/models/huggingface.py#L773) using EOS_token for Llama models. While our internal evaluation will load python original checkpoints and handle individual generation request asynchronously without any padding. To simulate this, we will use VLLM inference solution to do dynamic batching without any padding.
+By default, for the generative tasks, the `lm-eval --model_args="{...}" --batch_size=auto` command will use Hugging Face inference solution that uses a static batch method with [left padding](https://github.com/EleutherAI/lm-evaluation-harness/blob/8ad598dfd305ece8c6c05062044442d207279a97/lm_eval/models/huggingface.py#L773) using EOS_token for Llama models. While our internal evaluation will load python original checkpoints and handle individual generation request asynchronously without any padding. To simulate this, we will use VLLM inference solution to do dynamic batching without any padding.
 
 **NOTE**: Since our prompts in the evals dataset has already included all the special tokens required by instruct model, such as `|start_header_id|>user<|end_header_id|>`, we will not use `--apply_chat_template` argument for instruct models anymore. However, we need to use `add_bos_token=True` flag to add the BOS_token back during VLLM inference, as the BOS_token is removed by default in [this PR](https://github.com/EleutherAI/lm-evaluation-harness/pull/1465).
 
@@ -185,4 +185,4 @@ or it is expected as stated in [this comment](https://github.com/vllm-project/vl
 
 ## Acknowledgement
 
-This tutorial is inspired by [leaderboard tasks implementation on the lm_evaluation_harness](https://github.com/EleutherAI/lm-evaluation-harness/tree/main/lm_eval/tasks/leaderboard) created by Huggingface 🤗 [Open LLM Leaderboard v2](https://huggingface.co/spaces/open-llm-leaderboard/open_llm_leaderboard) team.
+This tutorial is inspired by [leaderboard tasks implementation on the lm_evaluation_harness](https://github.com/EleutherAI/lm-evaluation-harness/tree/main/lm_eval/tasks/leaderboard) created by Hugging Face 🤗 [Open LLM Leaderboard v2](https://huggingface.co/spaces/open-llm-leaderboard/open_llm_leaderboard) team.
