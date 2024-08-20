@@ -34,6 +34,15 @@ class custom_dataset:
     data_path: str = ""
     
 @dataclass
+class counter_dataset:
+    dataset: str = "counter_dataset"
+    file: str = "src/llama_recipes/datasets/counter_dataset.py"
+    train_split: str = "src/llama_recipes/datasets/couterdata/counterfact.json"
+    test_split: str = ""
+    data_path: str = "src/llama_recipes/datasets/couterdata/counterfact.json"
+    
+        
+@dataclass
 class llamaguard_toxicchat_dataset:
     dataset: str = "llamaguard_toxicchat_dataset"
     train_split: str = "train"

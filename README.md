@@ -198,3 +198,4 @@ See the License file for Meta Llama 3 [here](https://github.com/meta-llama/llama
 
 See the License file for Meta Llama 2 [here](https://github.com/meta-llama/llama-models/blob/main/models/llama2/LICENSE) and Acceptable Use Policy [here](https://github.com/meta-llama/llama-models/blob/main/models/llama2/USE_POLICY.md)
 <!-- markdown-link-check-enable -->
+torchrun --nnodes 1 --nproc_per_node 8  finetuning.py --enable_fsdp  --model_name meta-llama/Meta-Llama-3.1-8B --use_peft --peft_method lora --dataset counter_dataset --save_model --dist_checkpoint_root_folder model_checkpoints --dist_checkpoint_folder fine-tuned --fsdp_config.pure_bf16 --output_dir /home/ljc/representation-engineering/llama-recipes/model-counter
